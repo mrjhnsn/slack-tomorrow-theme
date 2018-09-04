@@ -7,7 +7,7 @@ A slack theme using Tomorrow Night colors
 Add this code to the file `ssb-interop.js`:
 - MacOS: `/Applications/Slack.app/Contents/Resources/app.asar.unpacked/src/static/ssb-interop.js`
 - Windows: `C:\Users\<user>\AppData\Local\slack\app-<slack-version>\resources\app.asar.unpacked\src\static\ssb-interop.js`
-- Linux: '/usr/lib/slack/resources/app.asar.unpacked/src/static/ssb-interop.js'
+- Linux: `/usr/lib/slack/resources/app.asar.unpacked/src/static/ssb-interop.js`
 
 Place this code:
 ```js
