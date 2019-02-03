@@ -28,39 +28,41 @@ document.addEventListener('DOMContentLoaded', function() {
 Between these functions like so:
 
 ```js
-/**
- * Patch Node.js globals back in, refer to
- * https://electron.atom.io/docs/api/process/#event-loaded.
- */
-const processRef = window.process;
-process.once('loaded', () => {
-  window.process = processRef;
-});
+ /**
+   * Patch Node.js globals back in, refer to
+   * https://electron.atom.io/docs/api/process/#event-loaded.
+   */
+  const processRef = window.process;
+  process.once('loaded', () => {
+    window.process = processRef;
+  });
 
+  window.perfTimer.PRELOAD_STARTED = preloadStartTime;
 
 /**
  * Add in the dark mode function
  */
-
 document.addEventListener('DOMContentLoaded', function() {
     $.ajax({
-        url: 'https://raw.githubusercontent.com/mrjhnsn/slack-tomorrow-theme/master/custom.css',
+        url: 'https://cdn.rawgit.com/mrjhnsn/slack-tomorrow-theme/master/custom.css',
         success: function(css) {
             $("<style></style>").appendTo('head').html(css)
         }
     });
 });
 
+  // Consider "initial team booted" as whether the workspace is the first loaded after Slack launches
+  ipcRenderer.once('SLACK_PRQ_TEAM_BOOT_ORDER', (_event, order) => {
+    window.perfTimer.isInitialTeamBooted = order === 1;
+  });
+  ipcRenderer.send('SLACK_PRQ_TEAM_BOOTED'); // Main process will respond SLACK_PRQ_TEAM_BOOT_ORDER
 
+  const resourcePath = path.join(__dirname, '..', '..');
+  const mainModule = require.resolve('../ssb/main.ts');
+  const isDevMode = loadSettings.devMode && isPrebuilt();
 
-/**
- * loadSettings are just the command-line arguments we're concerned with, in
- * this case developer vs production mode.
- */
-const loadSettings = window.loadSettings = assignIn({},
-  require('electron').remote.getGlobal('loadSettings'),
-  { windowType: 'webapp' }
-);
+  init(resourcePath, mainModule, !isDevMode);
+}
 ```
 
 This fixes the issue for me on MacOs and intermittently on Linux.
