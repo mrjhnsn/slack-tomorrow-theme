@@ -2,6 +2,11 @@
 
 A slack theme using Tomorrow Night colors
 
+# Note 
+
+The latest version of Slack no longer uses this directory or these files.
+I am working on a new fix.
+
 # Installation
 
 Add this code to the file `ssb-interop.js`:
